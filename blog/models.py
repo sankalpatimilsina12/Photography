@@ -25,10 +25,13 @@ class Image(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=20)
-    description = models.TextField()
-    featured_image = models.ForeignKey("Image", on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    featured_image = models.ForeignKey("Image", on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta(object):
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name

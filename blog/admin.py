@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Image
+from .models import Image, Category, Tag
 
 # Register your models here.
 class ImageAdmin(admin.ModelAdmin):
@@ -7,3 +7,5 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Image, ImageAdmin)
+admin.site.register(Category)
+admin.site.register(Tag)
