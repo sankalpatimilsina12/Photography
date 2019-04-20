@@ -1,18 +1,23 @@
 from django.db import models
-from django.utils import timezone
+import hashlib
+import time
+import os
 
-# Create your models here.
+
+def update_filename(instance, filename):
+    m = hashlib.md5()
+    name, extension = os.path.splitext(filename)
+    m.update((name + str(time.time())).encode("utf-8"))
+    return m.hexdigest() + extension
+
+
 class Image(models.Model):
     title = models.CharField(max_length=20)
-    file_name = models.CharField(max_length=200)
-    alt = models.CharField(max_length=20)
-    description = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    def update(self):
-        self.updated_at = timezone.now()
-        self.save()
+    file = models.ImageField(blank=True, upload_to=update_filename)
+    alt = models.CharField(max_length=20, blank=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -22,12 +27,8 @@ class Category(models.Model):
     name = models.CharField(max_length=20)
     description = models.TextField()
     featured_image = models.ForeignKey("Image", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    def update(self):
-        self.updated_at = timezone.now()
-        self.save()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -35,11 +36,8 @@ class Category(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=10)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    def update(self):
-        self.updated_at = timezone.now()
-        self.save()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
